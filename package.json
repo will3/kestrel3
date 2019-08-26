@@ -1,0 +1,28 @@
+{
+  "name": "kestrel",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/jest": "^24.0.18",
+    "@types/lodash": "^4.14.137",
+    "@types/three": "^0.103.2",
+    "@types/uuid": "^3.4.5",
+    "jest": "^24.9.0",
+    "ts-jest": "^24.0.2",
+    "ts-node": "^8.3.0",
+    "typescript": "^3.5.3"
+  },
+  "dependencies": {
+    "lodash": "^4.17.15",
+    "simplex-noise": "^2.4.0",
+    "three": "^0.107.0",
+    "tsyringe": "^3.3.0",
+    "uuid": "^3.3.3"
+  }
+}
