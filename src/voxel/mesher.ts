@@ -1,9 +1,22 @@
 import Chunk from "./chunk";
-import { Vector3, Geometry, Face3, Mesh } from "three";
+import { Vector3, Geometry, Face3, Mesh, Object3D, Material } from "three";
+import Chunks from "./chunks";
 
 export default class Mesher {
-    static mesh(chunk: Chunk<number>) {
-        let u, v;
+    static meshChunks(chunks: Chunks<number>, object: Object3D) {
+        for (let id in chunks.map) {
+            const chunk = chunks.map[id];
+            if (!chunk.dirty) {
+                continue;
+            }
+            const mesh = this.meshChunk(chunk, chunks.material);
+            object.add(mesh);
+            mesh.position.copy(chunk.origin);
+            chunk.dirty = false;
+        }
+    }
+
+    static meshChunk(chunk: Chunk<number>, material: Material) {
         const size = chunk.size;
 
         const mesh = new Mesh();
@@ -11,25 +24,22 @@ export default class Mesher {
         const geometry = new Geometry();
 
         for (let d = 0; d < 3; d++) {
-            u = (d + 1) % 3;
-            v = (d + 2) % 3;
-
-            for (let i = 0; i < size; i++) {
+            for (let i = 0; i < size - 1; i++) {
                 for (let j = 0; j < size; j++) {
                     for (let k = 0; k < size; k++) {
-                        const a = chunk.get(i, j, k);
-                        const b = chunk.get(i + 1, j, k);
+                        const a = this.getValue(chunk, i, j, k, d);
+                        const b = this.getValue(chunk, i + 1, j, k, d);
 
                         if (a > 0 === b > 0) {
                             continue;
                         }
 
-                        const flip = a > 0;
+                        const flip = b > 0;
 
-                        const v1 = this.getVector(i, j, k, d);
-                        const v2 = this.getVector(i + 1, j, k, d);
-                        const v3 = this.getVector(i + 1, j + 1, k, d);
-                        const v4 = this.getVector(i, j + 1, k, d);
+                        const v1 = this.getVector(i + 1, j, k, d);
+                        const v2 = this.getVector(i + 1, j + 1, k, d);
+                        const v3 = this.getVector(i + 1, j + 1, k + 1, d);
+                        const v4 = this.getVector(i + 1, j, k + 1, d);
 
                         const index = geometry.vertices.length;
                         geometry.vertices.push(v1, v2, v3, v4);
@@ -46,8 +56,14 @@ export default class Mesher {
             }
         }
 
+        geometry.computeFaceNormals();
+
         mesh.geometry = geometry;
-        
+        mesh.material = material;
+
+        mesh.castShadow = true;
+        mesh.receiveShadow = true;
+
         return mesh;
     }
 
@@ -57,9 +73,21 @@ export default class Mesher {
         }
 
         if (d == 1) {
-            return new Vector3(j, k, i);
+            return new Vector3(k, i, j);
         }
 
-        return new Vector3(k, i, j);
+        return new Vector3(j, k, i);
+    }
+
+    private static getValue(chunk: Chunk<number>, i: number, j: number, k: number, d: number) {
+        if (d == 0) {
+            return chunk.get(i, j, k);
+        }
+
+        if (d == 1) {
+            return chunk.get(k, i, j);
+        }
+
+        return chunk.get(j, k, i);
     }
 }

@@ -1,13 +1,14 @@
+import { Vector3 } from "three";
+
 export default class Chunk<T> {
     private data: T[] = [];
-    private _size: number;
+    readonly size: number;
+    readonly origin: Vector3;
+    dirty = false;
 
-    get size() {
-        return this._size;
-    }
-
-    constructor(size: number) {
-        this._size = size;
+    constructor(size: number, origin: Vector3) {
+        this.size = size;
+        this.origin = origin;
     }
 
     get(i: number, j: number, k: number) {
@@ -18,9 +19,10 @@ export default class Chunk<T> {
     set(i: number, j: number, k: number, v: T) {
         const index = this.getIndex(i, j, k);
         this.data[index] = v;
+        this.dirty = true;
     }
 
     private getIndex(i: number, j: number, k: number) {
-        return i * this._size * this._size + j * this._size + k;
+        return i * this.size * this.size + j * this.size + k;
     }
 }

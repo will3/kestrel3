@@ -1,3 +1,5 @@
+import "reflect-metadata";
+
 import EntityManager from "./entityManager";
 import Component from "./component";
 import Entity from "./entity";
@@ -5,16 +7,11 @@ import _ from "lodash";
 import Renderer from "./renderer";
 
 export default class Runner {
-    private entityManager: EntityManager;
-    private renderer: Renderer = new Renderer();
+    readonly entityManager = new EntityManager();
+    readonly renderer: Renderer = new Renderer();
 
-    constructor(entityManager: EntityManager = new EntityManager()) {
-        this.entityManager = entityManager;
+    constructor() {
         this.animate = this.animate.bind(this);
-    }
-
-    init() {
-        this.renderer.init();
     }
 
     animate() {
@@ -41,7 +38,7 @@ export default class Runner {
             if (component.shouldDestroy) {
                 component.destroy();
                 component.destroyed = true;
-                
+
                 this.renderer.scene.remove(component.object);
             }
         });

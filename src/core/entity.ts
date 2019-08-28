@@ -1,6 +1,9 @@
+import "reflect-metadata";
+
 import guid from "uuid/v4";
 import Component from "./component";
 import _ from "lodash";
+import { container, InjectionToken } from "tsyringe";
 
 export default class Entity {
     id = guid();
@@ -11,7 +14,11 @@ export default class Entity {
         return this._components;
     }
 
-    addComponent(component: Component) {
+    addComponent<T extends Component>(component: T | InjectionToken<T>): T  {
+        if (!(component instanceof Component)) {
+            component = container.resolve(component);
+        }
+        
         this._components.push(component);
         if (component._entity != null) {
             if (component._entity == this) {
@@ -21,6 +28,7 @@ export default class Entity {
             }
         }
         component._entity = this;
+
         return component;
     }
 

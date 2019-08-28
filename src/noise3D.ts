@@ -10,6 +10,7 @@ export default class Noise3D {
     yScale = 1.0;
     noise: SimplexNoise;
     type: NoiseType = "FBM";
+    amplitude = 1.0;
 
     constructor(seed: string) {
         this.noise = new SimplexNoise(seed);
@@ -18,7 +19,7 @@ export default class Noise3D {
     public getValue(i: number, j: number, k: number) {
         switch (this.type) {
             case "FBM":
-                return this.getFBM(i, j, k);
+                return this.getFBM(i, j, k) * this.amplitude;
             default:
                 throw new Error("Not implemented");
         }

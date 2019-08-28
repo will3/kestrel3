@@ -1,9 +1,11 @@
 import Component from "../core/component";
 import { BoxGeometry, MeshNormalMaterial, Mesh } from "three";
+import { injectable } from "tsyringe";
 
+@injectable()
 export default class TestCube extends Component {
     start() {
-        const geometry = new BoxGeometry(1, 1, 1);
+        const geometry = new BoxGeometry(0.5, 0.5, 0.5);
         const material = new MeshNormalMaterial();
 
         const mesh = new Mesh(geometry, material);
