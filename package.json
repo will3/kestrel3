@@ -22,7 +22,7 @@
     "lodash": "^4.17.15",
     "reflect-metadata": "^0.1.13",
     "simplex-noise": "^2.4.0",
-    "three": "^0.107.0",
+    "three": "^0.137.0",
     "tsyringe": "^3.3.0",
     "uuid": "^3.3.3"
   }
